@@ -35,6 +35,7 @@ const setupServer = () => {
     });
 
     app.get('/contacts/:contactId', async (req, res) => {
+       try {
         const { contactId } = req.params;
         
         const contact = await getContactById(contactId);
@@ -52,6 +53,16 @@ const setupServer = () => {
             message: `Successfully found contact with id ${contactId}!`,
         });
 
+       } catch (error) {
+           if (error.message.includes('Cast to ObjectId failed')) {
+               error.status = 404;
+           }
+           const { status = 500 } = error;
+           res.status(status).json({
+            message: error.message
+        })
+       }
+        
     });
 
     app.use('*', (req, res) => {
