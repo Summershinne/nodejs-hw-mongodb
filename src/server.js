@@ -4,7 +4,7 @@ import cors from "cors";
 import env from "./utils/env.js"
 import { getContactById , getAllContacts} from "./services/contacts.js";
 
-const PORT = Number(env("PORT", "3000"));
+const PORT = env("PORT", "3000");
 
 const setupServer = () => {
     const app = express();
@@ -25,25 +25,25 @@ const setupServer = () => {
     });
 
     app.get('/contacts', async (req, res) => {
-        const contacts = await getAllContacts();
+        const contact = await getAllContacts();
         
         res.status(200).json({
             status: 200,
-            data: contacts,
+            data: contact,
             message: "Successfully found contacts!"
         })
     });
 
     app.get('/contacts/:contactId', async (req, res) => {
         const { contactId } = req.params;
+        
         const contact = await getContactById(contactId);
-       
+        
         if (!contact) {
-            res.status(404).json({
+            return res.status(404).json({
                 status: 404,
                 message: 'Student not found'
             });
-            return;
         };
 
  res.status(200).json({
@@ -57,7 +57,7 @@ const setupServer = () => {
     app.use('*', (req, res) => {
         res.status(404).json({
             status:404,
-            message: "Not found"
+            message: 'Not found'
         })
     });
 
