@@ -12,12 +12,16 @@ export const getAllContacts = async ({ filter, page, perPage, sortBy = contactFi
     if (filter.isFavourite) {
         databaseQuery.where('isFavourite').equals(filter.isFavourite)
     }
-    const data = await databaseQuery.skip(skip).limit(perPage).sort({ [sortBy]: sortOrder });
-    const totalItems = await Contact.find().merge(databaseQuery).countDocuments();
+    // const items = await databaseQuery.skip(skip).limit(perPage).sort({ [sortBy]: sortOrder }).exec();
+    // const totalItems = await Contact.find().merge(databaseQuery).countDocuments();
+
+    const [totalItems, items] = await Promise.all([
+        Contact.find().merge(databaseQuery).countDocuments(), databaseQuery.skip(skip).limit(perPage).sort({ [sortBy]: sortOrder }).exec(),
+    ]);
     const { totalPages, hasNextPage, hasPreviousPage } = calcPaginationData({ total: totalItems, page, perPage });
    
     return {
-        data,
+        items,
         page,
         perPage,
         totalItems,
