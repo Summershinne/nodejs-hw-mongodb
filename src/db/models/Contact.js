@@ -1,4 +1,6 @@
 import { Schema, model } from "mongoose";
+import { typeList } from "../../constants/contacts-constants.js";
+import { mongooseSaveError, setUpdateSettings } from "./hooks.js";
 
 const contactShema = new Schema({
     name: {
@@ -20,7 +22,7 @@ const contactShema = new Schema({
 
     contactType: {
         type: String,
-        enum: ["work", "home", "personal"],
+        enum: typeList,
         require: true,
         default: "personal"
     }
@@ -30,6 +32,13 @@ const contactShema = new Schema({
         versionKey: false
     },
 );
+
+contactShema.post('save',mongooseSaveError);
+
+contactShema.pre('findOneAndUpdate', setUpdateSettings)
+
+contactShema.post('findOneAndUpdate', mongooseSaveError);
+
 
 const Contact = model("contact", contactShema);
 
