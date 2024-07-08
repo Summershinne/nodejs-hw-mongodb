@@ -4,6 +4,8 @@ const calcPaginationData = ({ total, page, perPage }) => {
     const hasPreviousPage = page !== 1;
 
     return {
+        page,
+        perPage,
         totalPages,
         hasNextPage,
         hasPreviousPage
