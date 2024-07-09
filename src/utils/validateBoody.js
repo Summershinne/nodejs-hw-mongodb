@@ -8,7 +8,7 @@ const validateBody = (schema) => {
             });
             next();
         } catch (error) {
-            const responseError = createHttpError(400, error.messagge, {
+            const responseError = createHttpError(400, error.message, {
                 errors: error.details,
             })
             next(responseError)
