@@ -18,4 +18,4 @@ validateBody(updateContactsSchema), ctrlWrapper(patchContactController));
 
 contactsRouter.delete('/contacts/:contactId', isValidId, ctrlWrapper(deleteContactController));
 
-export default contactsRouter;
+export default contactsRouter; 

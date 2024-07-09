@@ -33,11 +33,11 @@ const contactShema = new Schema({
     },
 );
 
-contactShema.post('save',mongooseSaveError);
+contactShema.post("save", mongooseSaveError);
 
-contactShema.pre('findOneAndUpdate', setUpdateSettings)
+contactShema.pre("findOneAndUpdate", setUpdateSettings);
 
-contactShema.post('findOneAndUpdate', mongooseSaveError);
+contactShema.post("findOneAndUpdate", mongooseSaveError);
 
 
 const Contact = model("contact", contactShema);
