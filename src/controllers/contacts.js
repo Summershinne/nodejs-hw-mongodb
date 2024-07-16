@@ -6,9 +6,10 @@ import { contactFieldList } from "../constants/contacts-constants.js";
 import parseContactFilterParams from "../utils/parseContactFilterParams.js";
 
 export const getContactsController = async (req, res) => {
+    const { _id: userId } = req.user;
     const { page, perPage } = parsePaginationParams(req.query);
     const { sortBy, sortOrder } = parseSortParams(req.query, contactFieldList);
-    const filter = parseContactFilterParams(req.query);
+    const filter = { ...parseContactFilterParams(req.query), userId };
     const contact = await getAllContacts({
         page,
         perPage,
@@ -43,7 +44,8 @@ export const getContactByIdConntroller = async (req, res, next) => {
 };
 
 export const addContactController = async (req, res) => {
-  const contact = await addContact(req.body);
+    const { _id: userId } = req.user;
+  const contact = await addContact(...req.body, userId);
     res.status(201).json({
         status: 201,
         message: "Successfully created a contact!",

@@ -25,7 +25,12 @@ const contactShema = new Schema({
         enum: typeList,
         require: true,
         default: "personal"
-    }
+    },
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: "user",
+        require: true
+    },
 },
     {
         timestamps: true,
