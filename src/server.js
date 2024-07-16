@@ -6,6 +6,7 @@ import contactsRouter from './routers/contacts.js'
 import { errorHandler } from "./middlewares/errorHandler.js";
 import { notFoundHandler } from "./middlewares/notFoundHandler.js";
 import authRouter from "./routers/auth.js";
+import cookieParser from "cookie-parser";
 
 const PORT = env("PORT", "3000");
 
@@ -19,14 +20,16 @@ const setupServer = () => {
 
     app.use(logger);
     app.use(cors());// дозволяє обмінюватися інформацією між веб-ресурсами з різних доменів.
+    app.use(cookieParser());
     app.use(express.json());
+    
     app.get("/", (req, res) => {
         res.json({
             status: 200,
             message: 'Hello world!'
         });
     });
-    app.use( authRouter);
+    app.use("/auth",authRouter);
 
     app.use(contactsRouter);
     
