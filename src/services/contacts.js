@@ -6,6 +6,9 @@ import { sortOrderList } from '../constants/index.js';
 export const getAllContacts = async ({ filter, page, perPage, sortBy = contactFieldList[0], sortOrder = sortOrderList[0] }) => {
     const skip = (page - 1) * perPage;
     const databaseQuery = Contact.find();
+    if (filter.userId) {
+        databaseQuery.where('userId').equals(filter.userId);
+    }
     if (filter.contactType) {
         databaseQuery.where('contactType').equals(filter.contactType)
     }
