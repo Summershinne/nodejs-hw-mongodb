@@ -34,7 +34,7 @@ export const getAllContacts = async ({ filter, page, perPage, sortBy = contactFi
     }
 };
 
-export const getContactById = (contactId) => Contact.findById(contactId);
+export const getContactById = filter => Contact.findOne(filter);
 
 export const addContact = contactId => Contact.create(contactId);
 
