@@ -39,7 +39,7 @@ export const getContactById = filter => Contact.findOne(filter);
 export const addContact = contactId => Contact.create(contactId);
 
 export const patchContact = async (contactId, payload, options = {}) => {
-    const rawResult = await Contact.findOneAndUpdate({ _id: contactId }, payload, {
+    const rawResult = await Contact.findOneAndUpdate({ _id: contactId,  userId: userId }, payload, {
         includeResultMetadata: true,
         ...options,
     });
@@ -51,6 +51,6 @@ export const patchContact = async (contactId, payload, options = {}) => {
 };
 
 export const deleteContact = async (contactId) => {
-    const contact = await Contact.findOneAndDelete({ _id: contactId });
+    const contact = await Contact.findOneAndDelete({ _id: contactId,  userId: userId });
     return contact;
 };
