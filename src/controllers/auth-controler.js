@@ -1,14 +1,15 @@
 import createHttpError from "http-errors";
 import {createSession, deleteSession, findSession} from "../services/session-services.js"
 import {findUser, signup} from "../services/auth-services.js"
-import { compareHash } from "../utils/hash.js";
+import { compareHash, hashValue } from "../utils/hash.js";
 import jwt from 'jsonwebtoken';
 import { SMTP, TEMPLATES_DIR } from "../constants/smtp-constants.js";
-import  {env}  from '../utils/env.js';
+import  env  from '../utils/env.js';
 import { sendEmail } from "../utils/sendMail.js";
 import fs from 'node:fs/promises';
 import handlebars from 'handlebars';
 import path from 'node:path';
+import User from "../db/models/User.js";
 
 const setupResponseSession = (res, { refreshToken, refreshTokenValidUntil, _id }) => {
     res.cookie("refreshToken", refreshToken, {
@@ -107,7 +108,7 @@ export const logoutController = async (req, res) => {
 };
 
 export const requestResetEmailController = async (req, res) => {
-   const { email } = req.body;
+    const { email } = req.body;
     const user = await findUser({ email });
     if (!user) {
         throw createHttpError(404, "User not found");
@@ -120,20 +121,20 @@ export const requestResetEmailController = async (req, res) => {
         env('JWT_SECRET'),
         { expiresIn: '5m' });
     
-     const resetPasswordTemplatePath = path.join(
-    TEMPLATES_DIR,
-    'reset-password-email.html',
-  );
+    const resetPasswordTemplatePath = path.join(
+        TEMPLATES_DIR,
+        'reset-password-email.html',
+    );
 
-  const templateSource = (
-    await fs.readFile(resetPasswordTemplatePath)
-  ).toString();
+    const templateSource = (
+        await fs.readFile(resetPasswordTemplatePath)
+    ).toString();
 
-  const template = handlebars.compile(templateSource);
-  const html = template({
-    name: user.name,
-    link: `${env('APP_DOMAIN')}/reset-password?token=${resetToken}`,
-  });
+    const template = handlebars.compile(templateSource);
+    const html = template({
+        name: user.name,
+        link: `${env('APP_DOMAIN')}/reset-password?token=${resetToken}`,
+    });
 
     await sendEmail({
         from: env(SMTP.SMTP_FROM),
@@ -143,8 +144,41 @@ export const requestResetEmailController = async (req, res) => {
     });
 
     res.json({
-         message: 'Reset password email was successfully sent!',
-    status: 200,
-    data: {},
-  });
-}
+        message: 'Reset password email was successfully sent!',
+        status: 200,
+        data: {},
+    });
+};
+
+export const resetPasswordController = async (payload) => {
+    const { password } = payload;
+    let entries;
+
+    try {
+        entries = jwt.verify(payload.token, env('JWT_SECRET'));
+    } catch (error) {
+        if (error instanceof Error) throw createHttpError(401,' Token is expired or invalid.');
+        throw error;
+    }
+
+    const user = await findUser({
+        email: entries.email,
+        _id: entries.sub
+    });
+
+    if (!user) {
+        throw createHttpError(404, 'User not found')
+    }
+
+    const encryptedPassword = await hashValue(password);
+
+    await User.updateOne(
+        { _id: user._id },
+        { password: encryptedPassword },
+    )
+    res.json({
+        message: 'Password was successfilly reset!',
+        status: 200,
+        data: {},
+    });
+};
