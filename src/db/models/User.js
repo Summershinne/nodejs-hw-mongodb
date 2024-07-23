@@ -17,7 +17,6 @@ const userShema = new Schema({
         type: String,
         require: true
     }
-
 }, {
     timestamps: true,
     versionKey: false

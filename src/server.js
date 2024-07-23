@@ -21,7 +21,13 @@ const setupServer = () => {
     app.use(logger);
     app.use(cors());// дозволяє обмінюватися інформацією між веб-ресурсами з різних доменів.
     app.use(cookieParser());
-    app.use(express.json());
+    app.use(
+    express.json({
+      type: ['application/json', 'application/vnd.api+json'],
+      limit: '100kb',
+    }),
+  );
+
     
     app.get("/", (req, res) => {
         res.json({

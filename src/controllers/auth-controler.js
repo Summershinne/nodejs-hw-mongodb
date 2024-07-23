@@ -1,7 +1,7 @@
 import createHttpError from "http-errors";
 import {createSession, deleteSession, findSession} from "../services/session-services.js"
 import {findUser, signup} from "../services/auth-services.js"
-import { compareHash, hashValue } from "../utils/hash.js";
+import { compareHash } from "../utils/hash.js";
 import jwt from 'jsonwebtoken';
 import { SMTP, TEMPLATES_DIR } from "../constants/smtp-constants.js";
 import  env  from '../utils/env.js';
@@ -9,7 +9,8 @@ import { sendEmail } from "../utils/sendMail.js";
 import fs from 'node:fs/promises';
 import handlebars from 'handlebars';
 import path from 'node:path';
-import User from "../db/models/User.js";
+import  User  from "../db/models/User.js";
+import bcrypt from 'bcrypt';
 
 const setupResponseSession = (res, { refreshToken, refreshTokenValidUntil, _id }) => {
     res.cookie("refreshToken", refreshToken, {
@@ -109,11 +110,11 @@ export const logoutController = async (req, res) => {
 
 export const requestResetEmailController = async (req, res) => {
     const { email } = req.body;
-    const user = await findUser({ email });
+    const user = await User.findOne({email});
     if (!user) {
         throw createHttpError(404, "User not found");
     }
-
+    console.log(user);
     const resetToken = jwt.sign({
         sub: user._id,
         email,
@@ -150,27 +151,27 @@ export const requestResetEmailController = async (req, res) => {
     });
 };
 
-export const resetPasswordController = async (payload) => {
-    const { password } = payload;
+export const resetPasswordController = async (req, res) => {
+    const { token, password } = req.body;
     let entries;
 
     try {
-        entries = jwt.verify(payload.token, env('JWT_SECRET'));
+        entries = jwt.verify(token, env("JWT_SECRET"));
     } catch (error) {
         if (error instanceof Error) throw createHttpError(401,' Token is expired or invalid.');
         throw error;
     }
 
-    const user = await findUser({
+    const user = await User.findOne({
         email: entries.email,
-        _id: entries.sub
+        _id: entries.sub,
     });
 
     if (!user) {
         throw createHttpError(404, 'User not found')
     }
 
-    const encryptedPassword = await hashValue(password);
+    const encryptedPassword = await bcrypt.hash(password,10);
 
     await User.updateOne(
         { _id: user._id },
