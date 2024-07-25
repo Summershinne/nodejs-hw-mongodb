@@ -19,11 +19,9 @@ const contactShema = new Schema({
         type: Boolean,
         default: false
     },
-
     contactType: {
         type: String,
         enum: typeList,
-        require: true,
         default: "personal"
     },
     userId: {
@@ -31,6 +29,7 @@ const contactShema = new Schema({
         ref: "user",
         require: true
     },
+    photo: { type: String },
 },
     {
         timestamps: true,
@@ -43,7 +42,6 @@ contactShema.post("save", mongooseSaveError);
 contactShema.pre("findOneAndUpdate", setUpdateSettings);
 
 contactShema.post("findOneAndUpdate", mongooseSaveError);
-
 
 const Contact = model("contact", contactShema);
 
