@@ -7,6 +7,7 @@ import { errorHandler } from "./middlewares/errorHandler.js";
 import { notFoundHandler } from "./middlewares/notFoundHandler.js";
 import authRouter from "./routers/auth.js";
 import cookieParser from "cookie-parser";
+import { UPLOAD_DIR } from "./constants/pictures-constants.js";
 
 const PORT = env("PORT", "3000");
 
@@ -27,7 +28,7 @@ const setupServer = () => {
       limit: '100kb',
     }),
   );
-
+    app.use('/uploads', express.static(UPLOAD_DIR));
     
     app.get("/", (req, res) => {
         res.json({

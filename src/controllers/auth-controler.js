@@ -11,6 +11,7 @@ import handlebars from 'handlebars';
 import path from 'node:path';
 import  User  from "../db/models/User.js";
 import bcrypt from 'bcrypt';
+import authenticate from "../middlewares/authenticate.js";
 
 const setupResponseSession = (res, { refreshToken, refreshTokenValidUntil, _id }) => {
     res.cookie("refreshToken", refreshToken, {
@@ -109,12 +110,12 @@ export const logoutController = async (req, res) => {
 };
 
 export const requestResetEmailController = async (req, res) => {
+    
     const { email } = req.body;
     const user = await User.findOne({email});
     if (!user) {
         throw createHttpError(404, "User not found");
     }
-    console.log(user);
     const resetToken = jwt.sign({
         sub: user._id,
         email,

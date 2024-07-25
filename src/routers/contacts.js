@@ -5,6 +5,7 @@ import isValidId from '../middlewares/isValidId.js';
 import validateBody from '../utils/validateBoody.js';
 import { createContactsSchema, updateContactsSchema } from '../validation/contacts.js';
 import authenticate from '../middlewares/authenticate.js';
+import { upload } from '../middlewares/multer.js';
 
 const contactsRouter = Router();
 
@@ -14,9 +15,9 @@ contactsRouter.get('/contacts', ctrlWrapper(getContactsController));
 
 contactsRouter.get('/contacts/:contactId', isValidId, ctrlWrapper(getContactByIdConntroller));
 
-contactsRouter.post('/contacts', validateBody(createContactsSchema), ctrlWrapper(addContactController));
+contactsRouter.post('/contacts', upload.single('photo'),validateBody(createContactsSchema), ctrlWrapper(addContactController));
 
-contactsRouter.patch('/contacts/:contactId', isValidId,
+contactsRouter.patch('/contacts/:contactId', upload.single('photo'), isValidId,
 validateBody(updateContactsSchema), ctrlWrapper(patchContactController));
 
 contactsRouter.delete('/contacts/:contactId', isValidId, ctrlWrapper(deleteContactController));
