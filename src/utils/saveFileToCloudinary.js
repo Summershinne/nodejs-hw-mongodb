@@ -1,5 +1,5 @@
 import cloudinary from 'cloudinary';
-import { env } from './env.js';
+import  env  from './env.js';
 import { CLOUDINARY } from '../constants/pictures-constants.js';
 
 cloudinary.v2.config({
