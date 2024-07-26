@@ -11,7 +11,6 @@ import handlebars from 'handlebars';
 import path from 'node:path';
 import  User  from "../db/models/User.js";
 import bcrypt from 'bcrypt';
-import authenticate from "../middlewares/authenticate.js";
 
 const setupResponseSession = (res, { refreshToken, refreshTokenValidUntil, _id }) => {
     res.cookie("refreshToken", refreshToken, {

@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
-import { addContactController, deleteContactController, getContactByIdConntroller, getContactsController, patchContactController } from '../controllers/contacts.js';
+import { addContactController, deleteContactController, getContactByIdController, getContactsController, patchContactController } from '../controllers/contacts.js';
 import isValidId from '../middlewares/isValidId.js';
-import validateBody from '../utils/validateBoody.js';
+import validateBody from '../utils/validateBody.js';
 import { createContactsSchema, updateContactsSchema } from '../validation/contacts.js';
 import authenticate from '../middlewares/authenticate.js';
 import { upload } from '../middlewares/multer.js';
@@ -13,7 +13,7 @@ contactsRouter.use(authenticate);
 
 contactsRouter.get('/contacts', ctrlWrapper(getContactsController));
 
-contactsRouter.get('/contacts/:contactId', isValidId, ctrlWrapper(getContactByIdConntroller));
+contactsRouter.get('/contacts/:contactId', isValidId, ctrlWrapper(getContactByIdController));
 
 contactsRouter.post('/contacts', upload.single('photo'),validateBody(createContactsSchema), ctrlWrapper(addContactController));
 
