@@ -24,12 +24,15 @@ const contactShema = new Schema({
         enum: typeList,
         default: "personal"
     },
+    photo: {
+        type: String
+    },
     userId: {
         type: Schema.Types.ObjectId,
         ref: "user",
         require: true
     },
-    photo: { type: String },
+   
 },
     {
         timestamps: true,
