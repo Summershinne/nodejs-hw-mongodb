@@ -40,7 +40,7 @@ export const addContact = contactId => Contact.create(contactId);
 
 export const patchContact = async (contactId, userId, payload, options = {}) => {
     const rawResult = await Contact.findOneAndUpdate(
-        { _id: contactId, userId: userId },
+        { _id: contactId, userId:userId },
         payload,
         {
             new: true,
