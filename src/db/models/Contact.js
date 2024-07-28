@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import { typeList } from "../../constants/contacts-constants.js";
 import { mongooseSaveError, setUpdateSettings } from "./hooks.js";
 
-const contactShema = new Schema({
+const contactSchema = new Schema({
     name: {
         type: String,
         require: true
@@ -40,12 +40,12 @@ const contactShema = new Schema({
     },
 );
 
-contactShema.post("save", mongooseSaveError);
+contactSchema.post("save", mongooseSaveError);
 
-contactShema.pre("findOneAndUpdate", setUpdateSettings);
+contactSchema.pre("findOneAndUpdate", setUpdateSettings);
 
-contactShema.post("findOneAndUpdate", mongooseSaveError);
+contactSchema.post("findOneAndUpdate", mongooseSaveError);
 
-const Contact = model("contact", contactShema);
+const Contact = model("contact", contactSchema);
 
 export default Contact;

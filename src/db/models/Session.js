@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema,model } from "mongoose";
 import { mongooseSaveError, setUpdateSettings } from "./hooks.js";
 
 const sessionShema = new Schema({
