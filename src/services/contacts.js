@@ -38,7 +38,7 @@ export const getContactById = filter => Contact.findOne(filter);
 
 export const addContact = contactId => Contact.create(contactId);
 
-export const patchContact = async (userId, contactId, payload, options = {}) => {
+export const patchContact = async (contactId, userId, payload, options = {}) => {
     const rawResult = await Contact.findOneAndUpdate(
         { _id: contactId, userId: userId },
         payload,
@@ -48,7 +48,7 @@ export const patchContact = async (userId, contactId, payload, options = {}) => 
             ...options,
         },
     );
-console.log('patchContact rawResult:', rawResult);
+
     
     if (!rawResult || !rawResult.value) return null;
     
