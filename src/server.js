@@ -26,7 +26,7 @@ const setupServer = () => {
     express.json({
       type: ['application/json', 'application/vnd.api+json'],
       limit: '100kb',
-    }),
+    })
   );
     app.use('/uploads', express.static(UPLOAD_DIR));
     
