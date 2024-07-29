@@ -39,23 +39,23 @@ export const getContactById = filter => Contact.findOne(filter);
 export const addContact = contactId => Contact.create(contactId);
 
 export const patchContact = async (contactId, userId, payload, options = {}) => {
-    const rawResult = await Contact.findOneAndUpdate(
+    const result = await Contact.findOneAndUpdate(
         { _id: contactId, userId: userId },
         payload,
         {
-            new: true,
+            // new: true,
             includeResultMetadata: true,
             ...options,
         },
     );
 
     
-    if (!rawResult || !rawResult.value) return null;
+    if (!result || !result.value) return null;
     
-    const isNew = Boolean(rawResult?.lastErrorObject?.upserted);
+    const isNew = Boolean(result?.lastErrorObject?.upserted);
    
     return {
-        contact: rawResult.value,
+        data: result.value,
         isNew,
     };
 };
